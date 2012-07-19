@@ -1,0 +1,31 @@
+HOST: http://payb.in/v1
+
+--- Paybin API v1 ---
+---
+This is my first attempt at changing the sample. I'm now editing it from GitHub, and it's very smart indeed! All comments can be written in (support [Markdown](http://daringfireball.net/projects/markdown/syntax) syntax)
+---
+
+--
+Sample Resources
+The following is a section of resources related to the person sample
+--
+Retrieve a sample person. (comment block again in Markdown)
+GET /person/sample
+< 200
+< Content-Type: application/json
+{"email":"owen@iol.ie","firstName":"Owen","id":"1","lastName":"test"}
+
+Save new products in your shopping cart
+POST /person
+> Content-Type: application/x-www-form-urlencoded
+firstName=Owen&lastName=O+Byrne&email=owen.obyrne@iol.ie
+< 201
+< Content-Type: application/json
+{"email":"owen.obyrne@iol.ie","firstName":"Owen","id":"1","lastName":"O Byrne"}
+
+-- Payment Resources --
+This resource allows you to submit payment information to process your *shopping cart* items
+POST /payment
+{ "cc": "12345678900", "cvc": "123", "expiry": "0112" }
+< 200
+{ "receipt": "/payment/receipt/1" }
