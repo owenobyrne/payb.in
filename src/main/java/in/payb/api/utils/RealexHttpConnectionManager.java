@@ -2,9 +2,13 @@ package in.payb.api.utils;
 
 import java.io.IOException;
 
+import org.apache.commons.httpclient.Credentials;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpConnectionManager;
 import org.apache.commons.httpclient.HttpException;
+import org.apache.commons.httpclient.UsernamePasswordCredentials;
+import org.apache.commons.httpclient.auth.AuthScope;
+import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.methods.StringRequestEntity;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,4 +45,31 @@ public class RealexHttpConnectionManager {
 		}
 
 	}
+	
+	public void getFromServer(String url) {
+		HttpClient client = new HttpClient(connectionManager);
+
+		Credentials defaultcreds = new UsernamePasswordCredentials("realexprepro", "Password1");
+		client.getState().setCredentials(AuthScope.ANY, defaultcreds);
+		
+		System.out.println("Getting " + url);
+		// and then from inside some thread executing a method
+		GetMethod g = new GetMethod(url);
+		try {
+			client.executeMethod(g);
+			System.out.println(g.getResponseBodyAsString());
+		} catch (HttpException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			// be sure the connection is released back to the connection
+			// manager
+			g.releaseConnection();
+		}
+
+	}
+	
 }

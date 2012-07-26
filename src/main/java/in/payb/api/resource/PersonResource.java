@@ -1,5 +1,6 @@
 package in.payb.api.resource;
 
+import in.payb.api.data.Transaction;
 import in.payb.api.model.Person;
 import in.payb.api.utils.RealexHttpConnectionManager;
 
@@ -27,7 +28,7 @@ public class PersonResource {
     private final static String LAST_NAME = "lastName";
     private final static String EMAIL = "email";
          
-    private Person person = new Person(1, "Sample", "Person", "sample_person@jerseyrest.com");
+    private Person person = new Person(1, "Owen", "O Byrne", "owen.obyrne@iol.ie");
      
     // The @Context annotation allows us to have certain contextual objects
     // injected into this class.
@@ -44,6 +45,9 @@ public class PersonResource {
     @Autowired
     RealexHttpConnectionManager realexHttpConnectionManager;
     
+    @Autowired
+    Transaction transaction;
+    
     // Basic "is the service running" test
     @GET
     @Produces(MediaType.TEXT_PLAIN)
@@ -55,7 +59,9 @@ public class PersonResource {
     @Path("sample")
     @Produces(MediaType.APPLICATION_JSON)
     public Person getSamplePerson() {
-         
+
+    	transaction.retrieve("_manual_786712114", "0dd892e54ea443f79c7104d2b9b91da7");
+        
         System.out.println("Returning sample person: " + person.getFirstName() + " " + person.getLastName());
          
         return person;
