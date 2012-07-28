@@ -1,34 +1,25 @@
 package in.payb.api.resource;
 
 import in.payb.api.data.TransactionDao;
-import in.payb.api.model.Person;
-import in.payb.api.utils.RealexHttpConnectionManager;
+import in.payb.api.model.Transaction;
 
-import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
-import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Request;
 import javax.ws.rs.core.UriInfo;
 
-import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
  
 @Component
-@Path("/person")
-public class PersonResource {
- 
-    private final static String FIRST_NAME = "firstName";
-    private final static String LAST_NAME = "lastName";
-    private final static String EMAIL = "email";
-         
-    private Person person = new Person(1, "Owen", "O Byrne", "owen.obyrne@iol.ie");
+@Path("/transaction")
+public class TransactionResource {
+    private Transaction transaction;
      
     // The @Context annotation allows us to have certain contextual objects
     // injected into this class.
@@ -43,10 +34,7 @@ public class PersonResource {
     Request request;
      
     @Autowired
-    RealexHttpConnectionManager realexHttpConnectionManager;
-    
-    @Autowired
-    TransactionDao transaction;
+    TransactionDao transactionDao;
     
     // Basic "is the service running" test
     @GET
@@ -56,17 +44,15 @@ public class PersonResource {
     }
  
     @GET
-    @Path("sample")
+    @Path("{orderid}/{guid}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Person getSamplePerson() {
+    public Transaction getSamplePerson(@PathParam("orderid") String orderid, @PathParam("guid") String guid) {
 
-    	transaction.retrieve("_manual_786712114", "0dd892e54ea443f79c7104d2b9b91da7");
-        
-        System.out.println("Returning sample person: " + person.getFirstName() + " " + person.getLastName());
-         
-        return person;
+    	transaction = transactionDao.retrieve(orderid, guid);
+        return transaction;
     }
          
+    /*
     // Use data from the client source to create a new Person object, returned in JSON format.  
     @POST
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
@@ -107,4 +93,5 @@ public class PersonResource {
         return person;
                          
     }
+    */
 }

@@ -46,9 +46,10 @@ public class RealexHttpConnectionManager {
 
 	}
 	
-	public void getFromServer(String url) {
+	public String getFromServer(String url) {
 		HttpClient client = new HttpClient(connectionManager);
-
+		String p = null;
+		
 		Credentials defaultcreds = new UsernamePasswordCredentials("realexprepro", "Password1");
 		client.getState().setCredentials(AuthScope.ANY, defaultcreds);
 		
@@ -57,7 +58,8 @@ public class RealexHttpConnectionManager {
 		GetMethod g = new GetMethod(url);
 		try {
 			client.executeMethod(g);
-			System.out.println(g.getResponseBodyAsString());
+			p = g.getResponseBodyAsString();
+			System.out.println(p);
 		} catch (HttpException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -69,7 +71,7 @@ public class RealexHttpConnectionManager {
 			// manager
 			g.releaseConnection();
 		}
-
+		return p;
 	}
 	
 }
