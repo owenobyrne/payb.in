@@ -50,7 +50,7 @@ public class RealexHttpConnectionManager {
 		HttpClient client = new HttpClient(connectionManager);
 		String p = null;
 		
-		Credentials defaultcreds = new UsernamePasswordCredentials("realexprepro", "Password1");
+		Credentials defaultcreds = new UsernamePasswordCredentials("ccentre!owen", "OeOyn616");
 		client.getState().setCredentials(AuthScope.ANY, defaultcreds);
 		
 		System.out.println("Getting " + url);
