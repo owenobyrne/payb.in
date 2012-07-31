@@ -1,5 +1,6 @@
 package in.payb.api.resource;
 
+import in.payb.api.CassandraConnection;
 import in.payb.api.data.TransactionListDao;
 import in.payb.api.model.Transaction;
 
@@ -7,7 +8,6 @@ import java.util.ArrayList;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
@@ -18,12 +18,16 @@ import javax.ws.rs.core.UriInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.netflix.astyanax.Keyspace;
+import com.netflix.astyanax.MutationBatch;
+import com.netflix.astyanax.connectionpool.OperationResult;
+import com.netflix.astyanax.connectionpool.exceptions.ConnectionException;
+
  
 @Component
 @Path("/transactions")
 public class TransactionListResource {
-    private Transaction transaction;
-     
+    
     // The @Context annotation allows us to have certain contextual objects
     // injected into this class.
     // UriInfo object allows us to get URI information (no kidding).
@@ -39,13 +43,16 @@ public class TransactionListResource {
     @Autowired
     TransactionListDao transactionListDao;
     
+  
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public ArrayList<Transaction> getTransactionList(
     		@QueryParam("from") String from, 
     		@QueryParam("to") String to
     	) {
-
+    	
+    	
+    	
     	ArrayList<Transaction> transactions = transactionListDao.retrieve(from, to);
         return transactions;
     }

@@ -4,7 +4,7 @@
   <groupId>in.payb</groupId>
   <packaging>war</packaging>
   <version>0.0.1-SNAPSHOT</version>
-  <name>realstripe Maven Webapp</name>
+  <name>Payb.in Maven Webapp</name>
   <url>http://maven.apache.org</url>
 
     <properties>
@@ -37,7 +37,12 @@
   <artifactId>commons-httpclient</artifactId>
   <version>3.1</version>
 </dependency>
-
+<dependency>
+	<groupId>com.netflix.astyanax</groupId>
+	<artifactId>astyanax</artifactId>
+	<version>0.8.9</version>
+</dependency>
+            
 		<dependency>
 			<groupId>com.sun.jersey.contribs</groupId>
 			<artifactId>jersey-spring</artifactId>
@@ -125,7 +130,7 @@
                 </configuration>
             </plugin>
         </plugins>
-    <finalName>realstripe</finalName>
+    <finalName>payb.in</finalName>
   </build>
   <artifactId>api</artifactId>
 </project>

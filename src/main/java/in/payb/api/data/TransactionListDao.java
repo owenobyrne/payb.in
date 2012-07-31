@@ -1,5 +1,6 @@
 package in.payb.api.data;
 
+import in.payb.api.CassandraConnection;
 import in.payb.api.model.Account;
 import in.payb.api.model.Transaction;
 import in.payb.api.utils.RealexHttpConnectionManager;
@@ -18,6 +19,13 @@ import org.apache.commons.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.netflix.astyanax.Keyspace;
+import com.netflix.astyanax.MutationBatch;
+import com.netflix.astyanax.connectionpool.OperationResult;
+import com.netflix.astyanax.connectionpool.exceptions.ConnectionException;
+import com.netflix.astyanax.model.Column;
+import com.netflix.astyanax.model.ColumnList;
+
 @Component
 public class TransactionListDao {
 	private final static String BASE = "https://emerchant.payandshop.com";
@@ -28,6 +36,9 @@ public class TransactionListDao {
 	
     @Autowired
     AccountListDao accountListDao;
+    
+    @Autowired
+    CassandraConnection cassandra;
     
 	public ArrayList<Transaction> retrieve(String from, String to) {
 		Formatter f = new Formatter(new StringBuilder(), Locale.UK);
@@ -42,13 +53,48 @@ public class TransactionListDao {
 			from = sdf.format(new Date());
 			to = sdf.format(new Date());
 		}
+		String qs;
 		
-		ArrayList<Account> al = accountListDao.retrieve();
-		String qs = "accounts#=#";
-		for (Object a : al.toArray()) {
-			qs += ((Account)a).getId() + ", ";
+		Keyspace keyspace = cassandra.getKeyspace();
+	    
+		OperationResult<ColumnList<String>> result = null;
+		try {
+			result = keyspace.prepareQuery(CassandraConnection.CF_USER_INFO)
+			    .getKey("ccentre")
+			    .execute();
+		} catch (ConnectionException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
 		}
-		qs = qs.substring(0, qs.length() - 2); // chop the last ", "
+		
+		// Lookup columns in response by name 
+		ColumnList<String> columns = result.getResult();
+		Column<String> c = columns.getColumnByName("accountList");
+		
+		if (c != null) {
+			qs = c.getStringValue();
+				
+		} else {
+			ArrayList<Account> al = accountListDao.retrieve();
+			qs = "accounts#=#";
+			for (Object a : al.toArray()) {
+				qs += ((Account)a).getId() + ", ";
+			}
+			qs = qs.substring(0, qs.length() - 2); // chop the last ", "		
+		
+			MutationBatch mb = keyspace.prepareMutationBatch();
+
+	    	mb.withRow(CassandraConnection.CF_USER_INFO, "ccentre")
+	    	  .putColumn("accountList", qs, null);
+
+	    	try {
+	    	  OperationResult<Void> result1 = mb.execute();
+	    	} catch (ConnectionException e) {
+	    		e.printStackTrace();
+	    	}
+
+		}
+				
 		qs += "&pasfromDate#=#" + from + "&pastoDate#=#" + to + "&start#=#0";
 		
 		System.out.println(qs);
@@ -110,6 +156,9 @@ public class TransactionListDao {
 			*/
 		}
 		
+		// two empties to ensure we get an array in the response json.
+		tl.add(new Transaction());
+		tl.add(new Transaction());
 		return tl;
 	}
 }
