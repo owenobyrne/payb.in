@@ -142,18 +142,7 @@ public class TransactionListDao {
 			t.setTransactionDate(m.group(17) + m.group(16) + m.group(15) + m.group(18) + m.group(19) + m.group(20));
 			
 			tl.add(t);
-			/*
-			 System.out.println("OID was " + m.group(1));
-			 System.out.println("GUID was " + m.group(2));
-			 System.out.println("Amount was " + m.group(3));
-			 System.out.println("Currency was " + m.group(4));
-			 System.out.println("Card type was " + m.group(5));
-			 System.out.println("Cardholder name was " + m.group(6));
-			 System.out.println("CustNum was " + m.group(7));
-			 System.out.println("VarRef was " + m.group(8));
-			 System.out.println("ProdId was " + m.group(9));
-			 System.out.println("TransactionDate was " + m.group(12) + m.group(11) + m.group(10) + m.group(13) + m.group(14) + m.group(15));
-			*/
+		
 		}
 		
 		// two empties to ensure we get an array in the response json.
