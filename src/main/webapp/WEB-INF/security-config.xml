@@ -31,7 +31,8 @@
                   authentication-failed-url="/oauth/confirm_access"
                   access-granted-url="/request_token_authorized.jsp"
                   access-token-url="/oauth/access_token"
-                  require10a="false"/>
+                  token-id-param="oauth_token" 
+                  require10a="true"/>
 
   <oauth:consumer-details-service id="consumerDetails">
     <oauth:consumer name="Tonr.com" key="tonr-consumer-key" secret="SHHHHH!!!!!!!!!!" resourceName="Your Photos"

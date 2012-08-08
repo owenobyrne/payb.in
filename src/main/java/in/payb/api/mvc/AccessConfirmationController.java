@@ -34,13 +34,17 @@ public class AccessConfirmationController {
   @RequestMapping(method = RequestMethod.GET)
   protected ModelAndView accessConfirmation(HttpServletRequest request, HttpServletResponse response) throws Exception {
     String token = request.getParameter("oauth_token");
+    System.out.println("In confirm_access - token is " + token);
     if (token == null) {
       throw new IllegalArgumentException("A request token to authorize must be provided.");
     }
 
-    OAuthProviderToken providerToken = getTokenServices().getToken(token);
-    ConsumerDetails consumer = getConsumerDetailsService().loadConsumerByConsumerKey(providerToken.getConsumerKey());
-
+    System.out.println("Got an oauth_token " + token);
+    
+    OAuthProviderToken providerToken = tokenServices.getToken(token);
+    System.out.println("Got providerToken " + providerToken.toString());
+    ConsumerDetails consumer = consumerDetailsService.loadConsumerByConsumerKey(providerToken.getConsumerKey());
+    System.out.println("Got a consumer " + consumer.toString());
     String callback = request.getParameter("oauth_callback");
     TreeMap<String, Object> model = new TreeMap<String, Object>();
     model.put("oauth_token", token);
@@ -49,21 +53,5 @@ public class AccessConfirmationController {
     }
     model.put("consumer", consumer);
     return new ModelAndView("access_confirmation", model);
-  }
-
-  public OAuthProviderTokenServices getTokenServices() {
-    return tokenServices;
-  }
-
-  public void setTokenServices(OAuthProviderTokenServices tokenServices) {
-    this.tokenServices = tokenServices;
-  }
-
-  public ConsumerDetailsService getConsumerDetailsService() {
-    return consumerDetailsService;
-  }
-
-  public void setConsumerDetailsService(ConsumerDetailsService consumerDetailsService) {
-    this.consumerDetailsService = consumerDetailsService;
   }
 }
