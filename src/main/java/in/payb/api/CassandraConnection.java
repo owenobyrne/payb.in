@@ -1,5 +1,7 @@
 package in.payb.api;
 
+import javax.annotation.PreDestroy;
+
 import org.springframework.stereotype.Component;
 
 import com.netflix.astyanax.AstyanaxContext;
@@ -18,13 +20,25 @@ import com.sun.jersey.spi.resource.Singleton;
 @Component
 public class CassandraConnection {
 	private Keyspace keyspace;
+	private AstyanaxContext<Keyspace> context;
+	
 	public static ColumnFamily<String, String> CF_USER_INFO = new ColumnFamily<String, String>(
 		    "Movies",              // Column Family Name
 		    StringSerializer.get(),   // Key Serializer
 		    StringSerializer.get());  // Column Serializer
-	
+		
+	@PreDestroy
+	public void cleanUp() throws Exception {
+		// dunno if this is the thread that is leaking, but good to shut it down anyways.
+		System.out.println("Shutting down Astayanax Cassandra connection...");
+		context.shutdown();
+		System.out.println("Astayanax Cassandra connection shutdown.");
+		
+	}
+
     public CassandraConnection() {
-    	AstyanaxContext<Keyspace> context = new AstyanaxContext.Builder()
+    	System.out.println("Firing up connection to Cassandra...");
+    	context = new AstyanaxContext.Builder()
         .forCluster("Test Cluster")
         .forKeyspace("OwenTest")
         .withAstyanaxConfiguration(new AstyanaxConfigurationImpl()      

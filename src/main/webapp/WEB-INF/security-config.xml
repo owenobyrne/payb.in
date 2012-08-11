@@ -36,7 +36,7 @@
     <oauth:consumer name="Tonr.com" key="tonr-consumer-key" secret="SHHHHH!!!!!!!!!!" resourceName="Your Photos"
                     resourceDescription="Your photos that you have uploaded to sparklr.com."/>
   </oauth:consumer-details-service>
-
+  
   <oauth:token-services id="tokenServices"/>
 
 </beans:beans>
