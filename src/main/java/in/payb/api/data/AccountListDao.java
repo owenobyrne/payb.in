@@ -20,8 +20,7 @@ import com.netflix.astyanax.model.ColumnList;
 
 @Component
 public class AccountListDao {
-	private final static String BASE = "https://emerchant.payandshop.com";
-	private final static String URL = BASE + "/Transactions/index-left-s.asp";
+	private final static String URL = "/Transactions/index-left-s.asp";
 	
     @Autowired
     RealexHttpConnectionManager realexHttpConnectionManager;
@@ -33,7 +32,7 @@ public class AccountListDao {
 		Matcher m;
 		String page;
 	
-		page = realexHttpConnectionManager.getFromServer(URL);
+		page = realexHttpConnectionManager.getFromRealControl(URL);
 		
 		p = Pattern.compile("account_id=(\\d+)\" target=\"main\">([^<]+)</a>");
 

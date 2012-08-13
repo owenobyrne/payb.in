@@ -31,10 +31,11 @@
     <authz:authorize ifNotGranted="ROLE_USER">
       <h2>Login</h2>
 
-      <p>We've got a grand total of 2 users: marissa and paul. Go ahead and log in. Marissa's password is "koala" and Paul's password is "emu".</p>
+      <p>Log in with your RealControl Company, Username and Password.</p>
       <form action="<c:url value="/login.do"/>" method="post">
-        <p><label>Username: <input type='text' name='j_username' value="marissa"></label></p>
-        <p><label>Password: <input type='text' name='j_password' value="koala"></label></p>
+        <p><label>Company: <input type='text' name='j_company' value="ccentre"></label></p>
+        <p><label>Username: <input type='text' name='j_username' value="owen"></label></p>
+        <p><label>Password: <input type='text' name='j_password' value="OeOyn616"></label></p>
         
         <p><input name="login" value="Login" type="submit"></p>
       </form>

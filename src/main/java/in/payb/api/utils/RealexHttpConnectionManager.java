@@ -12,10 +12,15 @@ import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.methods.StringRequestEntity;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 @Component
 public class RealexHttpConnectionManager {
+	private final static String RCBASE = "https://emerchant.payandshop.com";
+
+	
 	@Autowired
 	private HttpConnectionManager connectionManager;
 
@@ -27,9 +32,11 @@ public class RealexHttpConnectionManager {
 		HttpClient client = new HttpClient(connectionManager);
 
 		// and then from inside some thread executing a method
-		PostMethod post = new PostMethod("https://epage.payandshop.com/epage-remote.cgi");
+		PostMethod post = new PostMethod(
+				"https://epage.payandshop.com/epage-remote.cgi");
 		try {
-			post.setRequestEntity(new StringRequestEntity(xml, "text/xml", "ISO-8859-1"));
+			post.setRequestEntity(new StringRequestEntity(xml, "text/xml",
+					"ISO-8859-1"));
 			client.executeMethod(post);
 			System.out.println(post.getResponseBodyAsString());
 		} catch (HttpException e) {
@@ -45,17 +52,24 @@ public class RealexHttpConnectionManager {
 		}
 
 	}
-	
-	public String getFromServer(String url) {
+
+	public String getFromRealControl(String url) {
 		HttpClient client = new HttpClient(connectionManager);
 		String p = null;
+
+		// pull the credentials out of the session
+		UsernamePasswordAuthenticationToken upat = 
+				(UsernamePasswordAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
+
+		Credentials defaultcreds = new UsernamePasswordCredentials(
+				upat.getPrincipal().toString(),
+				upat.getCredentials().toString());
 		
-		Credentials defaultcreds = new UsernamePasswordCredentials("ccentre!owen", "OeOyn616");
 		client.getState().setCredentials(AuthScope.ANY, defaultcreds);
-		
+
 		System.out.println("Getting " + url);
 		// and then from inside some thread executing a method
-		GetMethod g = new GetMethod(url);
+		GetMethod g = new GetMethod(RCBASE + url);
 		try {
 			client.executeMethod(g);
 			p = g.getResponseBodyAsString();
@@ -73,5 +87,5 @@ public class RealexHttpConnectionManager {
 		}
 		return p;
 	}
-	
+
 }

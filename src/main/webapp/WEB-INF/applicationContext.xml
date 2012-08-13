@@ -6,11 +6,12 @@
 	http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.1.xsd
 	http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd">
 
-    <import resource="security-config.xml"/>
     
 	<context:annotation-config />
 	<context:component-scan base-package="in.payb.api" />
-
+	
+	<import resource="security-config.xml"/>
+    
 
 	<bean id="connectionManager"
 		class="org.apache.commons.httpclient.MultiThreadedHttpConnectionManager">

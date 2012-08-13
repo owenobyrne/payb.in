@@ -28,8 +28,7 @@ import com.netflix.astyanax.model.ColumnList;
 
 @Component
 public class TransactionListDao {
-	private final static String BASE = "https://emerchant.payandshop.com";
-	private final static String URL = BASE + "/Transactions/advancedsearch_improved.asp?selPage=%s&q=%s";
+	private final static String URL = "/Transactions/advancedsearch_improved.asp?selPage=%s&q=%s";
 	
     @Autowired
     RealexHttpConnectionManager realexHttpConnectionManager;
@@ -105,7 +104,7 @@ public class TransactionListDao {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		page = realexHttpConnectionManager.getFromServer(url);
+		page = realexHttpConnectionManager.getFromRealControl(url);
 		
 		p = Pattern.compile("<tr bgcolor=\"([^\"]*)\" onmouseover=\"colorBack\\(this,'white'\\)\" onmouseout=\"clearBack\\(this\\);\" onClick=\"location.href='show-trans.asp\\?orderid=([^&]+)&uuid=([0-9a-zA-Z]+)'\">\\s*" +
 				"<td class=\"listCell\" align=\"right\">&raquo;</td>\\s*<td class=\"listCell\" align=\"right\">\\s*" + 

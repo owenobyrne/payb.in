@@ -6,24 +6,30 @@
               http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.1.xsd
               http://www.springframework.org/schema/security/oauth http://www.springframework.org/schema/security/spring-security-oauth.xsd">
 
-  <http auto-config='true' access-denied-page="/login.jsp">
-    <intercept-url pattern="/v1/**" access="ROLE_USER" />
-    <intercept-url pattern="/oauth/confirm_access" access="ROLE_USER" />
-    <intercept-url pattern="/**" access="IS_AUTHENTICATED_ANONYMOUSLY" />
+  <http use-expressions="true" entry-point-ref="loginFormEntryPoint">
+    <intercept-url pattern="/v1/**" access="hasRole('USER')" />
+    <intercept-url pattern="/oauth/confirm_access" access="hasRole('USER')" />
+    <intercept-url pattern="/**" access="permitAll" />
 
-    <form-login authentication-failure-url="/login.jsp" default-target-url="/index.jsp" login-page="/login.jsp" login-processing-url="/login.do"/>
-    <logout logout-success-url="/index.jsp" logout-url="/logout.do"/>
+    <custom-filter position="FORM_LOGIN_FILTER" ref="paybinAuthenticationFilter"/>
   </http>
 
-  <authentication-manager>
-      <authentication-provider user-service-ref="userService"/>
+  <beans:bean class="org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint" id="loginFormEntryPoint">
+      <beans:property name="loginFormUrl" value="/login.jsp"/>
+  </beans:bean>
+  
+  <beans:bean id="paybinAuthenticationFilter" class="in.payb.api.mvc.filter.PaybinAuthenticationFilter">
+    <beans:constructor-arg name="filterProcessesUrl" type="java.lang.String" value="/login.do"/> <!-- this is the page that loginFormUrl above should post to. -->
+    <beans:property name="authenticationManager" ref="authenticationManager"/>
+  </beans:bean>
+  
+  <!-- erase-credentials defaults to true, which is fine if you can use the authentication objects on their
+  own. I need to be able to retrieve the password each time, so I need it not to erase them after the
+  call to authenticate();  -->
+  <authentication-manager erase-credentials="false" alias="authenticationManager">
+       <authentication-provider ref="paybinAuthenticationProvider"/>
   </authentication-manager>
-
-  <user-service id="userService">
-    <user name="marissa" password="koala" authorities="ROLE_USER"/>
-    <user name="paul" password="emu" authorities="ROLE_USER"/>
-  </user-service>
-
+ 
   <oauth:provider consumer-details-service-ref="consumerDetails"
                   token-services-ref="tokenServices"
                   token-id-param="oauth_token" 

@@ -13,8 +13,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class TransactionDao {
-	private final static String BASE = "https://emerchant.payandshop.com";
-	private final static String URL = BASE + "/Transactions/show-trans-full.asp?orderid=%s&uuid=%s";
+	private final static String URL = "/Transactions/show-trans-full.asp?orderid=%s&uuid=%s";
 	
     @Autowired
     RealexHttpConnectionManager realexHttpConnectionManager;
@@ -27,7 +26,7 @@ public class TransactionDao {
 		String page;
 		
 		String url = f.format(URL, orderid, uuid).toString();
-		page = realexHttpConnectionManager.getFromServer(url);
+		page = realexHttpConnectionManager.getFromRealControl(url);
 		
 		t.setOrderId(orderid);
 		
