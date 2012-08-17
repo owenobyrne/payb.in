@@ -7,6 +7,7 @@ import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -21,18 +22,24 @@ public class PaybinAuthenticationProvider implements AuthenticationProvider {
 	@Override
 	public Authentication authenticate(Authentication authentication)
 			throws AuthenticationException {
-		// initial implementation - pass straight back! Will check login to realcontrol. Should throw exceptions if not authenticated. 
+		// Check authentication against RealControl 
 		System.out.println("Authenticating " + authentication.toString());
 		
-		Set<RealControlRole> roles = EnumSet.noneOf(RealControlRole.class);
-		roles.add(RealControlRole.USER);
-       
-		// by setting the roles we are implicitly setting authenticated to true (can't call setAuthenticated directly)
-		UsernamePasswordAuthenticationToken upat = 
-				new UsernamePasswordAuthenticationToken(authentication.getPrincipal(), 
-						authentication.getCredentials(), roles);
-		
-		return upat;
+		if (realexHttpConnectionManager.checkLoginToRealControl(authentication)) {
+			Set<RealControlRole> roles = EnumSet.noneOf(RealControlRole.class);
+			roles.add(RealControlRole.USER);
+	       
+			// by setting the roles we are implicitly setting authenticated to true (can't call setAuthenticated directly)
+			UsernamePasswordAuthenticationToken upat = 
+					new UsernamePasswordAuthenticationToken(authentication.getPrincipal(), 
+							authentication.getCredentials(), roles);
+			
+			return upat;
+		} else {
+			// TODO change the check method to throw exceptions and catch them in a try loop
+			// throw the right exceptions for the different problems.
+			throw new BadCredentialsException("Incorrect login to RealControl.");
+		}
 	}
 
 	@Override
