@@ -25,7 +25,7 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.security.web.util.TextEscapeUtils;
 import org.springframework.stereotype.Component;
 
-@Component
+// no @Component here as we are configuring this explicitly in the XML
 public class PaybinAuthenticationFilter extends
 		AbstractAuthenticationProcessingFilter {
 
