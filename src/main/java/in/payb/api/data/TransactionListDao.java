@@ -1,6 +1,7 @@
 package in.payb.api.data;
 
 import in.payb.api.CassandraConnection;
+import in.payb.api.RealControlUserDetails;
 import in.payb.api.model.Account;
 import in.payb.api.model.Transaction;
 import in.payb.api.utils.RealexHttpConnectionManager;
@@ -17,6 +18,9 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import com.netflix.astyanax.Keyspace;
@@ -55,11 +59,15 @@ public class TransactionListDao {
 		String qs;
 		
 		Keyspace keyspace = cassandra.getKeyspace();
-	    
+
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		UsernamePasswordAuthenticationToken upat = (UsernamePasswordAuthenticationToken)authentication;
+		RealControlUserDetails rcud = (RealControlUserDetails)upat.getPrincipal();
+		
 		OperationResult<ColumnList<String>> result = null;
 		try {
 			result = keyspace.prepareQuery(CassandraConnection.CF_USER_INFO)
-			    .getKey("ccentre")
+			    .getKey(rcud.getCompany())
 			    .execute();
 		} catch (ConnectionException e1) {
 			// TODO Auto-generated catch block
@@ -83,8 +91,8 @@ public class TransactionListDao {
 		
 			MutationBatch mb = keyspace.prepareMutationBatch();
 
-	    	mb.withRow(CassandraConnection.CF_USER_INFO, "ccentre")
-	    	  .putColumn("accountList", qs, null);
+			
+	    	mb.withRow(CassandraConnection.CF_USER_INFO, rcud.getCompany()).putColumn("accountList", qs, null);
 
 	    	try {
 	    	  OperationResult<Void> result1 = mb.execute();
