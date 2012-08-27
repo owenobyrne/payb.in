@@ -74,7 +74,7 @@ public class RealexHttpConnectionManager {
 		try {
 			client.executeMethod(g);
 			p = g.getResponseBodyAsString();
-			System.out.println(p);
+			//System.out.println(p);
 		} catch (HttpException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
