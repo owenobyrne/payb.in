@@ -26,20 +26,21 @@
     <c:remove scope="session" var="SPRING_SECURITY_LAST_EXCEPTION"/>
 
     <authz:authorize ifAllGranted="USER">
-      <h2>Please Confirm</h2>
+      <h2>Enter Secrets</h2>
 
-      <p>You hereby authorize "<c:out value="${consumer.consumerName}"/>" to access the following resource:</p>
+      <p>To enable "<c:out value="${consumer.consumerName}"/>" to process authorisations and refunds, 
+      you will need to provide your shared secret and refund secret. 
+      <b>These are never stored on the Payb.in servers and are stored as encrypted data on your application/device.</b></p>
 
-      <ul>
-          <li><c:out value="${consumer.resourceName}"/> &mdash; <c:out value="${consumer.resourceDescription}"/></li>
-      </ul>
-
-      <form method="get" action="<c:url value="/oauth/authorize"/>">
+      <form method="post" action="<c:url value="/oauth/confirm_secrets"/>">
+        <p><label>Shared Secret: <input type='text' name='j_sharedsecret' value="secret"/></label></p>
+        <p><label>Refund Secret: <input type='text' name='j_refundpassword' value="refund"/></label></p>
+        
         <input name="oauth_token" value="<c:out value="${oauth_token}"/>" type="hidden"/>
         <c:if test="${!empty oauth_callback}">
         <input name="callbackURL" value="<c:out value="${oauth_callback}"/>" type="hidden"/>
         </c:if>
-        <label><input name="authorize" value="Authorize" type="submit"></label>
+        <label><input name="authorize" value="Save" type="submit"/></label>
       </form>
     </authz:authorize>
   </div>

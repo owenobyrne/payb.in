@@ -64,6 +64,8 @@ public class TransactionListDao {
 		UsernamePasswordAuthenticationToken upat = (UsernamePasswordAuthenticationToken)authentication;
 		RealControlUserDetails rcud = (RealControlUserDetails)upat.getPrincipal();
 		
+		System.out.println("The shared secret is " + rcud.getSharedsecret());
+		
 		OperationResult<ColumnList<String>> result = null;
 		try {
 			result = keyspace.prepareQuery(CassandraConnection.CF_USER_INFO)
