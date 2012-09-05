@@ -13,6 +13,7 @@ public class RealControlUserDetails implements UserDetails {
 		private String password;
 		private String sharedsecret;
 		private String refundpassword;
+		private String key;
 		
 		public RealControlUserDetails(String company, String username, String password) {
 			this.company = company;
@@ -21,8 +22,24 @@ public class RealControlUserDetails implements UserDetails {
 			
 		}
 		
+		public void scrubSensitiveDetails() {
+			this.password = null;
+			this.sharedsecret = null;
+			this.refundpassword = null;
+		}
 		
-		
+		public String getKey() {
+			return key;
+		}
+
+
+
+		public void setKey(String key) {
+			this.key = key;
+		}
+
+
+
 		public String getSharedsecret() {
 			return sharedsecret;
 		}
