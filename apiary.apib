@@ -1,31 +1,43 @@
-HOST: http://payb.in/v1
+HOST: http://api.realexfire.com/business/v1
 
---- Fire API v1 ---
+--- Realex Fire Business API v1 ---
 ---
-Now editing in Eclipse! All comments can be written in (support [Markdown](http://daringfireball.net/projects/markdown/syntax) syntax)
+The Realex Fire Business API allows you to deeply integrate our banking features 
+into your application. 
+
+Accepting a payment by Fire is performed by first requesting the payment from the 
+user, and then acting on the asynchronous instruction we send you when they 
+complete the payment. You must retain a status of the payment during the process.
+
 ---
 
 --
-Sample Resources
-The following is a section of resources related to the person sample
+Requesting Payments
+You can request a payment from an individual, or from a group of people. 
 --
-Retrieve a sample person. (comment block again in Markdown)
+Send a Payment Request to an individual, using either their email or mobile. 
 POST /request
+> Content-Type: application/json
+{"user": {"email":"owen.obyrne@gmail.com", "mobile": "0876394593"},"amount":2000,"currency":"EUR","message": "U17's first term fees"}
 < 200
 < Content-Type: application/json
-{"user": {"email":"owen.obyrne@gmail.com"},"amount":2000,"currency":"EUR","message": "U17's first term fees"}
+{"status": "OK", "requestId": "5a3c1e4a-0b32-4178-91a9-50c0916c17f8"}
 
-Save new products in your shopping cart
-POST /person
-> Content-Type: application/x-www-form-urlencoded
-firstName=Owen&lastName=O+Byrne&email=owen.obyrne@iol.ie
-< 201
+Send a Payment Request to group of people, using a group identifier previously configured in BUPA.
+POST /request
+> Content-Type: application/json
+{"group": "u17s","amount":2000,"currency":"EUR","message": "U17's first term fees"}
+< 200
 < Content-Type: application/json
-{"email":"owen.obyrne@iol.ie","firstName":"Owen","id":"1","lastName":"O Byrne"}
+{"status": "OK", "requestId": "5a3c1e4a-0b32-4178-91a9-50c0916c17f8"}
 
--- Payment Resources --
-This resource allows you to submit payment information to process your *shopping cart* items
+-- Payment Notifications --
+When a payment is made to your account, we will send you a notification to a pre-configured WebHook URL. 
+This will contain information about the payment made to your account, and will be signed by Realex Fire 
+for security. 
 POST /payment
-{ "cc": "12345678900", "cvc": "123", "expiry": "0112" }
+> Content-Type: application/json
+{"user": {"email":"owen.obyrne@gmail.com", "mobile": "0876394593"},"amount":2000,"currency":"EUR","status": "OK", "requestId": "5a3c1e4a-0b32-4178-91a9-50c0916c17f8"}
 < 200
-{ "receipt": "/payment/receipt/1" }
+< Content-Type: text/plain
+OK
