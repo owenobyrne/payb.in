@@ -1,6 +1,6 @@
 HOST: http://payb.in/v1
 
---- Paybin API v1 ---
+--- Fire API v1 ---
 ---
 Now editing in Eclipse! All comments can be written in (support [Markdown](http://daringfireball.net/projects/markdown/syntax) syntax)
 ---
@@ -10,10 +10,10 @@ Sample Resources
 The following is a section of resources related to the person sample
 --
 Retrieve a sample person. (comment block again in Markdown)
-GET /person/sample
+POST /request
 < 200
 < Content-Type: application/json
-{"email":"owen@iol.ie","firstName":"Owen","id":"1","lastName":"test"}
+{"user": {"email":"owen.obyrne@gmail.com"},"amount":2000,"currency":"EUR","message": "U17's first term fees"}
 
 Save new products in your shopping cart
 POST /person
